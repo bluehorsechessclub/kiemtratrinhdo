@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>♞ Blue Horse — Bài Test Trình Độ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+<style>
+:root{--gold:#d4a017;--gold-light:#f0d060;--gold-glow:rgba(212,160,23,0.15);--navy:#0c1b33;--navy2:#132744;--cream:#faf8f3;--white:#ffffff;--text:#1a1a2e;--text2:#4a4a5e;--dim:#8a8aa0;--border:#e8e5dd;--green:#059669;--red:#dc2626;--blue:#2563eb;--font:'Be Vietnam Pro',system-ui,sans-serif;--display:'Playfair Display',Georgia,serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font);background:var(--cream);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
+.hero{background:var(--navy);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(212,160,23,0.08) 0%,transparent 70%);}
+.hero::after{content:'♞';position:absolute;font-size:220px;color:rgba(255,255,255,0.015);top:-30px;right:-30px;line-height:1;transform:rotate(-15deg);}
+.chess-strip{height:6px;background:linear-gradient(90deg,var(--gold),var(--gold-light),var(--gold));}
+.hero-inner{max-width:560px;margin:0 auto;padding:28px 24px 24px;position:relative;z-index:1;text-align:center;}
+.logo-row{display:inline-flex;align-items:center;gap:14px;margin-bottom:16px;}
+.logo-icon{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 4px 20px rgba(212,160,23,0.25);}
+.logo-text{text-align:left;}
+.logo-text h1{font:800 15px var(--font);color:#fff;letter-spacing:2px;}
+.logo-text span{font-size:10px;color:rgba(255,255,255,0.4);font-weight:500;letter-spacing:1px;}
+.hero-divider{width:50px;height:1px;margin:0 auto 14px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.hero h2{font:800 20px/1.35 var(--display);color:#fff;margin-bottom:6px;}
+.hero h2 em{font-style:normal;color:var(--gold-light);}
+.hero-sub{font:500 12px var(--font);color:rgba(255,255,255,0.4);}
+.main{max-width:560px;margin:0 auto;padding:0 16px 40px;}
+.container{margin-top:-12px;position:relative;z-index:2;}
+.section{background:var(--white);border-radius:24px;padding:28px 24px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.04),0 8px 32px rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.04);animation:slideUp .5s ease both;}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.section-head{display:flex;align-items:center;gap:14px;margin-bottom:24px;}
+.section-num{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font:800 15px var(--font);flex-shrink:0;}
+.section-head h3{font:700 16px var(--font);color:var(--text);}
+.section-head p{font:400 12px var(--font);color:var(--dim);margin-top:2px;}
+.field{margin-bottom:20px;}.field:last-child{margin-bottom:0;}
+.field label{display:flex;align-items:center;gap:6px;font:600 13px var(--font);color:var(--text);margin-bottom:8px;}
+.ico{font-size:15px;}.req{color:var(--red);font-size:11px;}
+.field input,.field select{width:100%;padding:15px 18px;border-radius:14px;border:2px solid #eeecea;background:#fdfcfa;font:500 15px var(--font);color:var(--text);outline:none;transition:all .25s;-webkit-appearance:none;appearance:none;}
+.field input:focus,.field select:focus{border-color:var(--gold);background:var(--white);box-shadow:0 0 0 5px var(--gold-glow);}
+.field input::placeholder{color:#c5c3bc;font-weight:400;}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6' fill='%23b0aea6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 18px center;padding-right:44px;cursor:pointer;}
+.field-error{border-color:var(--red)!important;}
+.error-msg{font:500 11px var(--font);color:var(--red);margin-top:6px;display:none;}
+.btn{width:100%;padding:18px;border:none;border-radius:16px;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;font:700 16px var(--font);cursor:pointer;transition:all .25s;letter-spacing:.5px;box-shadow:0 4px 24px rgba(12,27,51,0.2);position:relative;overflow:hidden;}
+.btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(212,160,23,0.1) 100%);}
+.btn:hover{transform:translateY(-2px);}
+.btn:disabled{opacity:.5;cursor:wait;transform:none;}
+.btn span{position:relative;z-index:1;}
+.puzzle-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.puzzle-count{font:800 14px var(--font);color:var(--navy);}
+.puzzle-progress{display:flex;gap:4px;flex-wrap:wrap;}
+.prog-dot{width:8px;height:8px;border-radius:50%;background:#eeecea;transition:all .3s;}
+.prog-dot.done{background:var(--green);}.prog-dot.current{background:var(--gold);transform:scale(1.3);}
+.progress-bar{height:6px;background:#eeecea;border-radius:3px;margin-bottom:20px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:3px;transition:width .4s ease;}
+.puzzle-question{font:600 15px var(--font);color:var(--navy);text-align:center;margin-bottom:16px;padding:12px 16px;background:#f0f4ff;border-radius:12px;border-left:4px solid var(--blue);}
+.test-id{text-align:center;font:500 11px var(--font);color:var(--dim);margin-bottom:12px;}
+.board-wrap{max-width:400px;margin:0 auto 16px;position:relative;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.1);border:3px solid var(--navy);}
+#chessBoard .white-1e1d7{background-color:#dee3e6!important;color:#8ca2ad!important;}
+#chessBoard .black-3c85d{background-color:#8ca2ad!important;color:#dee3e6!important;}
+.legal-dot{position:absolute;width:26%;height:26%;border-radius:50%;background:rgba(0,0,0,0.12);top:37%;left:37%;z-index:10;pointer-events:none;}
+.legal-capture{position:absolute;width:100%;height:100%;border-radius:50%;border:7px solid rgba(0,0,0,0.12);top:0;left:0;z-index:10;pointer-events:none;box-sizing:border-box;}
+.highlight-from{background-color:rgba(255,255,0,0.4)!important;}
+.highlight-to{background-color:rgba(255,255,0,0.4)!important;}
+.arrow-layer{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:15;}
+.puzzle-instruction{text-align:center;font:500 13px var(--font);color:var(--dim);margin-bottom:16px;}
+.puzzle-instruction.recorded{color:var(--green);font-weight:600;}
+.btn-next{width:100%;padding:16px;border:none;border-radius:14px;background:var(--gold);color:var(--navy);font:700 15px var(--font);cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(212,160,23,0.2);}
+.btn-next:hover{transform:translateY(-1px);}
+.success-card{background:var(--white);border-radius:24px;padding:48px 28px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.04),0 8px 32px rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.04);animation:slideUp .5s ease both;}
+.success-check{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#ecfdf5,#d1fae5);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:36px;box-shadow:0 4px 20px rgba(5,150,105,0.1);}
+.success-card h3{font:800 22px var(--display);color:var(--green);margin-bottom:10px;}
+.success-card p{font:400 14px/1.7 var(--font);color:var(--text2);max-width:360px;margin:0 auto;}
+.result-summary{margin-top:20px;padding:16px;background:var(--cream);border-radius:14px;font:600 16px var(--font);color:var(--navy);}
+.footer{text-align:center;padding:24px 16px 36px;}
+.footer-line{width:40px;height:2px;margin:0 auto 14px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+.footer p{font:400 11px var(--font);color:var(--dim);line-height:1.8;}
+.footer a{color:var(--gold);text-decoration:none;font-weight:600;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);padding:14px 28px;border-radius:14px;font:600 14px var(--font);z-index:200;box-shadow:0 8px 32px rgba(0,0,0,0.15);transition:transform .4s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;max-width:90%;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.sending{background:var(--navy);color:#fff;}
+.toast.ok{background:var(--green);color:#fff;}
+.toast.err{background:var(--red);color:#fff;}
+.hidden{display:none!important;}
+</style>
+</head>
+<body>
+<div class="hero"><div class="chess-strip"></div><div class="hero-inner">
+<div class="logo-row"><div class="logo-icon">♞</div><div class="logo-text"><h1>BLUE HORSE</h1><span>CHESS CLUB</span></div></div>
+<div class="hero-divider"></div>
+<h2>BÀI TEST <em>TRÌNH ĐỘ ĐẦU VÀO</em></h2>
+<div class="hero-sub">Kiểm tra năng lực cờ vua</div>
+</div></div>
+<div class="main"><div class="container">
+<div id="stepInfo"><div class="section">
+<div class="section-head"><div class="section-num" style="background:#eef1ff;color:#4a5ebd;">📝</div><div><h3>Thông tin học sinh</h3><p>Điền thông tin trước khi làm bài test</p></div></div>
+<div class="field"><label><span class="ico">✏️</span> Họ và tên <span class="req">*</span></label><input type="text" id="hoTen" placeholder="Nhập đầy đủ họ và tên" required><div class="error-msg" id="err-hoTen">Vui lòng nhập họ tên</div></div>
+<div class="field"><label><span class="ico">📅</span> Năm sinh <span class="req">*</span></label><input type="number" id="namSinh" placeholder="Ví dụ: 2015" inputmode="numeric" min="2000" max="2025" required><div class="error-msg" id="err-namSinh">Vui lòng nhập năm sinh</div></div>
+<div class="field"><label><span class="ico">📱</span> SĐT phụ huynh <span class="req">*</span></label><input type="tel" id="sdt" placeholder="Nhập SĐT phụ huynh" inputmode="tel" required><div class="error-msg" id="err-sdt">Vui lòng nhập số điện thoại</div></div>
+<div class="field"><label><span class="ico">♟️</span> Kinh nghiệm chơi cờ <span class="req">*</span></label><select id="kinhNghiem" required><option value="">— Chọn —</option><option>Chưa biết chơi</option><option>Mới biết luật (dưới 6 tháng)</option><option>Đã chơi 6 tháng - 1 năm</option><option>Đã chơi 1-2 năm</option><option>Đã chơi trên 2 năm</option></select><div class="error-msg" id="err-kinhNghiem">Vui lòng chọn</div></div>
+</div><button class="btn" onclick="startTest()"><span>♞ &nbsp;BẮT ĐẦU LÀM BÀI</span></button></div>
+
+<div id="stepPuzzle" class="hidden"><div class="section">
+<div class="test-id" id="testIdLabel"></div>
+<div class="puzzle-header"><div class="puzzle-count">Câu <span id="qNum">1</span> / <span id="qTotal">20</span></div><div class="puzzle-progress" id="progDots"></div></div>
+<div class="progress-bar"><div class="progress-fill" id="progBar" style="width:0%"></div></div>
+<div class="puzzle-question" id="qText"></div>
+<div class="board-wrap" id="boardWrap"><div id="chessBoard" style="width:100%"></div><svg class="arrow-layer" id="arrowLayer"></svg></div>
+<div class="puzzle-instruction" id="instruction">👆 Chạm quân cờ để xem nước đi, kéo thả để chọn</div>
+<button class="btn-next hidden" id="btnNext" onclick="nextPuzzle()">Câu tiếp theo →</button>
+</div></div>
+
+<div id="stepResult" class="hidden"><div class="success-card">
+<div class="success-check">✅</div><h3>Hoàn thành bài test!</h3>
+<p>Cảm ơn con đã hoàn thành bài kiểm tra trình độ.<br>Kết quả sẽ được thầy cô đánh giá và liên hệ phụ huynh.</p>
+<div class="result-summary" id="resultSummary"></div>
+</div></div>
+</div>
+<div class="footer"><div class="footer-line"></div><p>♞ <strong>Blue Horse Chess Club</strong><br><a href="tel:0354242349">Hotline: 0354 242 349</a></p></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script>
+/* ================================================================
+   ★★★ PHẦN CẦN SỬA ★★★
+   ================================================================
+
+   10 ĐỀ TEST x 20 CÂU MỖI ĐỀ
+   =============================
+   Hệ thống NGẪU NHIÊN chọn 1 đề mỗi lần mở link.
+
+   CÁCH SỬA MỖI CÂU:
+     fen:      Mã FEN (lấy từ lichess.org/editor)
+     answer:   Nước đi đúng (Re8, Qxf7, Nf3, exd5, O-O...)
+     question: Đề bài hiển thị
+
+   THÊM CÂU: Copy khối { fen:..., answer:..., question:... },
+   XÓA CÂU: Xóa từ // --- Câu N --- đến },
+   LƯU Ý: Giữ dấu phẩy sau mỗi }
+
+   ================================================================ */
+
+const ALL_TESTS = [
+
+  // =============================================
+  // ĐỀ 1
+  // =============================================
+  {
+    id: "Đề 1",
+    puzzles: [
+      // --- Câu 1 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 2 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 3 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 4 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 5 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 6 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 7 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 8 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 9 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 10 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 11 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 12 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 13 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 14 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 15 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 16 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 17 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 18 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 19 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 20 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+    ]
+  },
+
+  // =============================================
+  // ĐỀ 2
+  // =============================================
+  {
+    id: "Đề 2",
+    puzzles: [
+      // --- Câu 1 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 2 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 3 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 4 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 5 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 6 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 7 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 8 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 9 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 10 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 11 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 12 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 13 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 14 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 15 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 16 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 17 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 18 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 19 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 20 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+    ]
+  },
+
+  // =============================================
+  // ĐỀ 3
+  // =============================================
+  {
+    id: "Đề 3",
+    puzzles: [
+      // --- Câu 1 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 2 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 3 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 4 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 5 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 6 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 7 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 8 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 9 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 10 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 11 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 12 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 13 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 14 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 15 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 16 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 17 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 18 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 19 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 20 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+    ]
+  },
+
+  // =============================================
+  // ĐỀ 4
+  // =============================================
+  {
+    id: "Đề 4",
+    puzzles: [
+      // --- Câu 1 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 2 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 3 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 4 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 5 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 6 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 7 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 8 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 9 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 10 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 11 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 12 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 13 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 14 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 15 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 16 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 17 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 18 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 19 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 20 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+    ]
+  },
+
+  // =============================================
+  // ĐỀ 5
+  // =============================================
+  {
+    id: "Đề 5",
+    puzzles: [
+      // --- Câu 1 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 2 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 3 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 4 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 5 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 6 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 7 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 8 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 9 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 10 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 11 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 12 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 13 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 14 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 15 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 16 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 17 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 18 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 19 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 20 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+    ]
+  },
+
+  // =============================================
+  // ĐỀ 6
+  // =============================================
+  {
+    id: "Đề 6",
+    puzzles: [
+      // --- Câu 1 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 2 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 3 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 4 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 5 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 6 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 7 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 8 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 9 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 10 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 11 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 12 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 13 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 14 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 15 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 16 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 17 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 18 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 19 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 20 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+    ]
+  },
+
+  // =============================================
+  // ĐỀ 7
+  // =============================================
+  {
+    id: "Đề 7",
+    puzzles: [
+      // --- Câu 1 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 2 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 3 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 4 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 5 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 6 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 7 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 8 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 9 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 10 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 11 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 12 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 13 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 14 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 15 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 16 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 17 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 18 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 19 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 20 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+    ]
+  },
+
+  // =============================================
+  // ĐỀ 8
+  // =============================================
+  {
+    id: "Đề 8",
+    puzzles: [
+      // --- Câu 1 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 2 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 3 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 4 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 5 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 6 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 7 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 8 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 9 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 10 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 11 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 12 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 13 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 14 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 15 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 16 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 17 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 18 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 19 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 20 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+    ]
+  },
+
+  // =============================================
+  // ĐỀ 9
+  // =============================================
+  {
+    id: "Đề 9",
+    puzzles: [
+      // --- Câu 1 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 2 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 3 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 4 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 5 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 6 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 7 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 8 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 9 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 10 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 11 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 12 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 13 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 14 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 15 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 16 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 17 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 18 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 19 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 20 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+    ]
+  },
+
+  // =============================================
+  // ĐỀ 10
+  // =============================================
+  {
+    id: "Đề 10",
+    puzzles: [
+      // --- Câu 1 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 2 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 3 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 4 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 5 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 6 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 7 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 8 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 9 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 10 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 11 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 12 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 13 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 14 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+      // --- Câu 15 ---
+      {
+        fen: "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+        answer: "Qxf7",
+        question: "Trắng đi. Tìm nước chiếu hết."
+      },
+      // --- Câu 16 ---
+      {
+        fen: "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+        answer: "exd5",
+        question: "Trắng đi. Tìm nước ăn quân."
+      },
+      // --- Câu 17 ---
+      {
+        fen: "rnbqkb1r/pppppppp/5n2/4P3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
+        answer: "Nd5",
+        question: "Đen đi. Tìm nước đi tốt nhất cho Mã."
+      },
+      // --- Câu 18 ---
+      {
+        fen: "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2",
+        answer: "exf4",
+        question: "Đen đi. Tìm nước ăn quân."
+      },
+      // --- Câu 19 ---
+      {
+        fen: "r1bqkbnr/pppppppp/2n5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2",
+        answer: "Nf3",
+        question: "Trắng đi. Tìm nước phát triển quân tốt nhất."
+      },
+      // --- Câu 20 ---
+      {
+        fen: "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+        answer: "Re8",
+        question: "Trắng đi. Chiếu hết trong 1 nước."
+      },
+    ]
+  },
+
+];
+
+// ★ LINK GOOGLE SHEETS
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyJT25oP_ybicunm8oiZgUvi0kdfohPy0S6DDBT5WCI-OoaTZ2I5W9tPnn-FEHoeerQLA/exec";
+
+// ★ ĐÓNG/MỞ BÀI TEST (true = mở, false = đóng)
+const TEST_OPEN = true;
+const TEST_CLOSED_MESSAGE = "Bài test hiện đã đóng. Vui lòng liên hệ CLB.";
+
+/* ================================================================
+   ★★★ KHÔNG CẦN SỬA BÊN DƯỚI ★★★
+   ================================================================ */
+
+var board=null,game=null,currentIndex=0,moveLocked=false;
+var results=[],studentInfo={},selectedTest=null;
+selectedTest=ALL_TESTS[Math.floor(Math.random()*ALL_TESTS.length)];
+
+function norm(s){return s.replace(/[+#!?]/g,'');}
+function showToast(t,m){var e=document.getElementById('toast');e.className='toast '+t+' show';e.textContent=m;if(t!=='sending')setTimeout(function(){e.classList.remove('show');},4000);}
+
+function clearHighlights(){$('#chessBoard .square-55d63').removeClass('highlight-from highlight-to');$('#chessBoard .legal-dot, #chessBoard .legal-capture').remove();}
+
+function showLegalMoves(square){clearHighlights();var moves=game.moves({square:square,verbose:true});if(!moves.length)return;$('#chessBoard .square-'+square).addClass('highlight-from');moves.forEach(function(m){var $sq=$('#chessBoard .square-'+m.to);if(m.captured||m.flags.indexOf('e')!==-1){$sq.append('<div class="legal-capture"></div>');}else{$sq.append('<div class="legal-dot"></div>');}});}
+
+function drawArrow(from,to){var svg=document.getElementById('arrowLayer');svg.innerHTML='';var wrap=document.getElementById('boardWrap');var bw=wrap.offsetWidth,sq=bw/8;var orientation=board.orientation();var fc=sq2c(from,orientation,sq),tc=sq2c(to,orientation,sq);var dx=tc.x-fc.x,dy=tc.y-fc.y,angle=Math.atan2(dy,dx);var headLen=sq*0.35;var ex=tc.x-Math.cos(angle)*headLen*0.4,ey=tc.y-Math.sin(angle)*headLen*0.4;var ns='http://www.w3.org/2000/svg';var defs=document.createElementNS(ns,'defs');var marker=document.createElementNS(ns,'marker');marker.setAttribute('id','ah');marker.setAttribute('markerWidth','4');marker.setAttribute('markerHeight','4');marker.setAttribute('refX','2');marker.setAttribute('refY','2');marker.setAttribute('orient','auto');var poly=document.createElementNS(ns,'polygon');poly.setAttribute('points','0 0, 4 2, 0 4');poly.setAttribute('fill','rgba(0,120,200,0.7)');marker.appendChild(poly);defs.appendChild(marker);svg.appendChild(defs);var line=document.createElementNS(ns,'line');line.setAttribute('x1',fc.x);line.setAttribute('y1',fc.y);line.setAttribute('x2',ex);line.setAttribute('y2',ey);line.setAttribute('stroke','rgba(0,120,200,0.7)');line.setAttribute('stroke-width',sq*0.18);line.setAttribute('stroke-linecap','round');line.setAttribute('marker-end','url(#ah)');svg.appendChild(line);}
+
+function sq2c(sq,ori,sz){var c=sq.charCodeAt(0)-97,r=parseInt(sq[1])-1;if(ori==='white'){return{x:c*sz+sz/2,y:(7-r)*sz+sz/2};}else{return{x:(7-c)*sz+sz/2,y:r*sz+sz/2};}}
+
+function startTest(){var ok=true;[{id:'hoTen',e:'err-hoTen',ck:function(v){return v.trim().length>=2;}},{id:'namSinh',e:'err-namSinh',ck:function(v){return v>=2000&&v<=2025;}},{id:'sdt',e:'err-sdt',ck:function(v){return v.trim().length>=8;}},{id:'kinhNghiem',e:'err-kinhNghiem',ck:function(v){return v!=='';}}].forEach(function(c){var el=document.getElementById(c.id),er=document.getElementById(c.e);if(!c.ck(el.value)){el.classList.add('field-error');er.style.display='block';ok=false;}else{el.classList.remove('field-error');er.style.display='none';}});if(!ok){showToast('err','⚠️ Vui lòng điền đầy đủ thông tin');return;}studentInfo={hoTen:document.getElementById('hoTen').value.trim(),namSinh:document.getElementById('namSinh').value,sdt:document.getElementById('sdt').value.trim(),kinhNghiem:document.getElementById('kinhNghiem').value};document.getElementById('stepInfo').classList.add('hidden');document.getElementById('stepPuzzle').classList.remove('hidden');var pz=selectedTest.puzzles;document.getElementById('qTotal').textContent=pz.length;document.getElementById('testIdLabel').textContent='📝 '+selectedTest.id;var dots='';for(var i=0;i<pz.length;i++){dots+='<div class="prog-dot'+(i===0?' current':'')+'" id="dot-'+i+'"></div>';}document.getElementById('progDots').innerHTML=dots;loadPuzzle(0);window.scrollTo({top:0,behavior:'smooth'});}
+
+function loadPuzzle(index){currentIndex=index;moveLocked=false;var p=selectedTest.puzzles[index];document.getElementById('qNum').textContent=index+1;document.getElementById('qText').textContent=p.question;document.getElementById('instruction').textContent='👆 Chạm quân cờ để xem nước đi, kéo thả để chọn';document.getElementById('instruction').className='puzzle-instruction';document.getElementById('btnNext').classList.add('hidden');document.getElementById('arrowLayer').innerHTML='';var pct=(index/selectedTest.puzzles.length)*100;document.getElementById('progBar').style.width=pct+'%';for(var i=0;i<selectedTest.puzzles.length;i++){var dot=document.getElementById('dot-'+i);dot.className='prog-dot';if(i<index)dot.classList.add('done');if(i===index)dot.classList.add('current');}var side=p.fen.split(' ')[1];var orientation=(side==='b')?'black':'white';game=new Chess(p.fen);if(board)board.destroy();board=Chessboard('chessBoard',{position:p.fen,orientation:orientation,draggable:true,pieceTheme:'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',onDragStart:onDragStart,onDrop:onDrop,onSnapEnd:onSnapEnd,onMouseoverSquare:onMouseoverSquare,onMouseoutSquare:onMouseoutSquare});$(window).off('resize.board').on('resize.board',function(){if(board)board.resize();});}
+
+function onMouseoverSquare(sq,piece){if(moveLocked||!piece)return;var t=game.turn();if((t==='w'&&piece.search(/^b/)!==-1)||(t==='b'&&piece.search(/^w/)!==-1))return;showLegalMoves(sq);}
+function onMouseoutSquare(){if(!moveLocked)clearHighlights();}
+function onDragStart(source,piece){if(moveLocked)return false;var t=game.turn();if((t==='w'&&piece.search(/^b/)!==-1)||(t==='b'&&piece.search(/^w/)!==-1))return false;showLegalMoves(source);}
+
+function onDrop(source,target){if(moveLocked)return'snapback';clearHighlights();var move=game.move({from:source,to:target,promotion:'q'});if(move===null)return'snapback';moveLocked=true;$('#chessBoard .square-'+source).addClass('highlight-from');$('#chessBoard .square-'+target).addClass('highlight-to');setTimeout(function(){drawArrow(source,target);},100);var san=move.san;var isCorrect=norm(san)===norm(selectedTest.puzzles[currentIndex].answer);results.push({question:currentIndex+1,correct:isCorrect,studentMove:san,result:(isCorrect?'Đúng':'Sai')+' - '+san});document.getElementById('instruction').textContent='✅ Đã ghi nhận nước đi: '+san;document.getElementById('instruction').className='puzzle-instruction recorded';var pz=selectedTest.puzzles;document.getElementById('btnNext').textContent=(currentIndex<pz.length-1)?'Câu tiếp theo →':'📋 Nộp bài';document.getElementById('btnNext').classList.remove('hidden');}
+
+function onSnapEnd(){if(board&&game)board.position(game.fen());}
+function nextPuzzle(){if(currentIndex<selectedTest.puzzles.length-1){loadPuzzle(currentIndex+1);window.scrollTo({top:0,behavior:'smooth'});}else{submitTest();}}
+
+async function submitTest(){document.getElementById('stepPuzzle').classList.add('hidden');var correctCount=results.filter(function(r){return r.correct;}).length;var pz=selectedTest.puzzles;var data={thoiGian:new Date().toLocaleString('vi-VN'),baiTest:selectedTest.id,hoTen:studentInfo.hoTen,namSinh:studentInfo.namSinh,sdt:studentInfo.sdt,kinhNghiem:studentInfo.kinhNghiem,soDung:correctCount,tongCau:pz.length};results.forEach(function(r){data['cau'+r.question]=r.result;});document.getElementById('resultSummary').textContent='Đã hoàn thành '+pz.length+'/'+pz.length+' câu hỏi';document.getElementById('stepResult').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});if(!GOOGLE_SCRIPT_URL){console.log('📋 Kết quả:',data);showToast('ok','✅ Đã ghi nhận bài test! (Demo)');return;}try{showToast('sending','⏳ Đang gửi kết quả...');await fetch(GOOGLE_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});showToast('ok','✅ Đã gửi kết quả thành công!');}catch(e){showToast('err','❌ Gửi thất bại.');console.error(e);}}
+
+document.querySelectorAll('input,select').forEach(function(el){var c=function(){el.classList.remove('field-error');var e=el.closest('.field');if(e){var m=e.querySelector('.error-msg');if(m)m.style.display='none';}};el.addEventListener('input',c);el.addEventListener('change',c);});
+if(!TEST_OPEN){document.getElementById('stepInfo').innerHTML='<div class="success-card"><div class="success-check" style="background:linear-gradient(135deg,#fef3e2,#fde68a);">🔒</div><h3 style="color:var(--gold);">Bài test đã đóng</h3><p>'+TEST_CLOSED_MESSAGE+'</p></div>';}
+</script>
+</body>
+</html>
